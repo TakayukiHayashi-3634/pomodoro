@@ -1,0 +1,16 @@
+.shape {
+    width: 250px;
+    height: 250px;
+    background-image: conic-gradient(black 0deg, white 0deg);
+    clip-path: circle();
+    display: grid;
+    place-items: center;
+}
+
+.shape::before {
+    content: "";
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    clip-path: circle();
+}
