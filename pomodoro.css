@@ -14,3 +14,12 @@
     background-color: white;
     clip-path: circle();
 }
+
+#start
+{
+    display: inline;
+}
+#stop
+{
+    display: none;
+}
