@@ -4,25 +4,37 @@ window.onload = function ()
     let timeFlag = null;
     let coursFlag = false;
     let allTime;
+    let restTime;
+    let restAngle = 0;
 
     document.getElementById("start").onclick = function()
     {
         const min = document.getElementById("min");
         const sec = document.getElementById("sec");
         
+        document.getElementById("start").style.display = "none";
+        document.getElementById("stop").style.display = "inline";
+        document.getElementById("interval_time").style.display = "none";
+        document.getElementById("interval_cnt").style.display = "none";
+
         //一回目のスタートの処理をしてほしい為、初期値をnullにしている
         if(timeFlag == null)
         {
             coursFlag = true;
             allTime = parseInt(document.getElementById("min").value) * 60 + parseInt(document.getElementById("sec").value);
-            min.replaceWith(`${min.value}`);
-            sec.replaceWith(`${sec.value}`);
+            restTime = parseInt(document.getElementById("inter_min").value) * 60 + parseInt(document.getElementById("inter_sec").value);
+            
+            document.getElementById('minutes').innerHTML = min.value;
+            document.getElementById('second').innerHTML = sec.value;
         }
+
+        document.getElementById("min").style.display = "none";
+        document.getElementById("sec").style.display = "none";
+
         timeFlag = true;
-
-        document.getElementById("start").style.display = "none";
-        document.getElementById("stop").style.display = "inline";
-
+        
+        restAngle = 0;
+        
         const startSound = new Audio("sound/start.mp3");
         startSound.play();
     }
@@ -40,19 +52,38 @@ window.onload = function ()
         location.reload();
     }
 
+    let angle = 0;
+
     setInterval(function()
     {
-        if(timeFlag && coursFlag)
+        if(timeFlag)
         {
-            drawCircle(allTime,coursFlag);
+            if( angle < 365 ) 
+            {
+                //1/10秒間隔でアニメーションを進めているため、*10している
+                angle += 365/(allTime * 10);
+            }
+            drawCircle();
+        }
+        else if(coursFlag)
+        {
+            if(restAngle < 365)
+            {
+                //1/10秒間隔でアニメーションを進めているため、*10している
+                restAngle += 365/(restTime * 10);
+            }
+            else
+            {
+
+            }
+            restDrawCircle();
         }
     }
     ,100);
 
     setInterval(function()
     {
-        let oldtimeFlag = timeFlag;
-        if(timeFlag && coursFlag)
+        if(timeFlag)
         {
             if(document.getElementById("second").textContent > 0)
             {
@@ -66,32 +97,46 @@ window.onload = function ()
             else if(document.getElementById("second").textContent == 0 && document.getElementById("minutes").textContent == 0)
             {
                 timeFlag = false;
+                const stopSound = new Audio("sound/stop.mp3");
+                stopSound.play();
+
+                document.getElementById("interval_time").style.display = "inline";
+                document.getElementById("interval_cnt").style.display = "inline";
+                // document.getElementById("min").style.display = "inline";
+                // document.getElementById("sec").style.display = "inline";
+                // document.getElementById("minutes").style.display = "none";
+                // document.getElementById("second").style.display = "none";
+
+                document.getElementById('inter_minutes').innerHTML = document.getElementById("inter_min").value;
+                document.getElementById('inter_second').innerHTML = document.getElementById("inter_sec").value;
+                document.getElementById("inter_min").style.display = "none";
+                document.getElementById("inter_sec").style.display = "none";
             }
         }
-        
-        if(oldtimeFlag != timeFlag)
+        else
         {
-            const stopSound = new Audio("sound/stop.mp3");
-            stopSound.play();
+            if(document.getElementById("inter_second").textContent > 0)
+            {
+                document.getElementById("inter_second").textContent -=1;
+            }
+            else if(document.getElementById("inter_minutes").textContent > 0)
+            {
+                document.getElementById("inter_minutes").textContent -=1;
+                document.getElementById("inter_second").textContent = 59;
+            }
         }
     }
     ,1000);
 
-    let angle = 0;
-    function drawCircle(allTime,coursFlag) 
+    function drawCircle() 
     {
         const shape = document.querySelector(".shape");
-        if( angle < 365 ) 
-        {
-            //1/10秒間隔でアニメーションを進めているため、*10している
-            angle += 365/(allTime * 10);
-            shape.style.backgroundImage = `conic-gradient(black ${angle}deg, white ${angle}deg)`;
-        } 
-        else
-        {
-            coursFlag = false;
-            console.log("アニメーションが終了しました");
-            console.log(`${allTime}`);
-        }
+        shape.style.backgroundImage = `conic-gradient(black ${angle}deg, white ${angle}deg)`;
+    }
+
+    function restDrawCircle() 
+    {
+        const restShape = document.querySelector(".restShape");
+        restShape.style.backgroundImage = `conic-gradient(red ${restAngle}deg, white ${restAngle}deg)`;
     }
 }

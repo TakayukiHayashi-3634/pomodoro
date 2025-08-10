@@ -12,20 +12,49 @@
 <body>
 <br>
 
+<span id="wark_time">
+作業時間：
 <span id="minutes">
-<input type="number" value="0" id="min" name="min" min="0" max="59">
 </span>
+<input type="number" value="0" id="min" name="min" min="0" max="59">
+
 分
 <span id="second">
-<input type="number" value="30" id="sec" name="sec" min="0" max="59">
 </span>
+<input type="number" value="4" id="sec" name="sec" min="0" max="59">
 秒
 <br>
+</span>
+
+<br>
+<span id="interval_time">
+インターバル時間:
+<span id="inter_minutes">
+</span>
+<input type="number" value="0" id="inter_min" name="inter_min" min="0" max="59">
+分
+
+<span id="inter_second">
+</span>
+<input type="number" value="30" id="inter_sec" name="inter_sec" min="0" max="59">
+秒
+</span>
+
+<span id="interval_cnt">
+<br>
+インターバル回数：
+<span id="interval">
+<input type="number" value="2" id="interval" name="interval" min="1" max="60">
+</span>
+<br>
+</span>
+
 <button id="start">Start</button>
 <button id="stop">Stop</button>
 <button id="reset">Reset</button>
 <br><br>
 <div class="shape"></div>
+<div class="restShape"></div>
 
 </body>
 

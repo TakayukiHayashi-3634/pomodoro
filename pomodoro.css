@@ -15,6 +15,23 @@
     clip-path: circle();
 }
 
+.restShape {
+    width: 250px;
+    height: 250px;
+    background-image: conic-gradient(red 0deg, white 0deg);
+    clip-path: circle();
+    display: grid;
+    place-items: center;
+}
+
+.restShape::before {
+    content: "";
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    clip-path: circle();
+}
+
 #start
 {
     display: inline;
