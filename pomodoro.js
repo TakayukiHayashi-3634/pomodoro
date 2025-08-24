@@ -5,9 +5,59 @@ window.onload = function ()
     let coursFlag = false;
     let allTime;
     let restAllTime;
-    let restAngle = 0;
-    let pomodoroCnt = 0;
 
+    function pomodoroCnt ()
+    {
+        var count = 0;
+
+        return {
+            initialize: function(){
+                count = 0;
+            },
+            set: function(value){
+                count = value;
+            },
+            get: function(){
+                return count;
+            },
+            increment: function() {
+                count++;
+            },
+            show: function() {
+                console.log(count);
+            }
+        }; 
+    };
+
+    const pomodoroCount = new pomodoroCnt();
+
+    function circleAngle ()
+    {
+        var angle = 0;
+
+        return {
+            initialize: function(){
+                angle = 0;
+            },
+            set: function(value){
+                angle = value;
+            },
+            get: function(){
+                return angle;
+            },
+            add: function(value) {
+                angle+=value;
+            },
+            show: function() {
+                console.log(angle);
+            }
+        }; 
+    };
+
+    const circle = 360;
+    const pomodoroAngle = new circleAngle();
+    const restAngle = new circleAngle();
+    
     document.getElementById("start").onclick = function()
     {
         const min = document.getElementById("min");
@@ -20,7 +70,7 @@ window.onload = function ()
         document.getElementById("stop").style.display = "inline";
         document.getElementById("interval_time").style.display = "none";
 
-        document.getElementById('interval_cnt').innerHTML = pomodoroCnt +"/"+ document.getElementById("interval").value;
+        document.getElementById('interval_cnt').innerHTML = pomodoroCount.get() + "/"+ document.getElementById("interval").value;
 
         document.getElementById("interval").style.display = "none";
         //一回目のスタートの処理をしてほしい為、初期値をnullにしている
@@ -56,25 +106,23 @@ window.onload = function ()
         location.reload();
     }
 
-    let angle = 0;
-    const circle = 360;
 
     setInterval(function()
     {
         if(timeFlag)
         {
-            if( angle < circle ) 
+            if( pomodoroAngle.get() < circle ) 
             {
                 //1/10秒間隔でアニメーションを進めているため、*10している
-                angle += circle/(allTime * 10);
+                pomodoroAngle.add(circle/(allTime * 10));
             }
             drawCircle();
         }
         else if(coursFlag)
         {
-            if(restAngle < circle)
+            if(restAngle.get() < circle)
             {
-                restAngle += circle/(restAllTime * 10);
+                restAngle.add(circle/(restAllTime * 10));
             }
             restDrawCircle();
         }
@@ -102,8 +150,8 @@ window.onload = function ()
 
                 document.getElementById("interval_time").style.display = "inline";
 
-                pomodoroCnt++;
-                document.getElementById('interval_cnt').innerHTML = pomodoroCnt +"/"+ document.getElementById("interval").value;
+                pomodoroCount.increment();
+                document.getElementById('interval_cnt').innerHTML = pomodoroCount.get() +"/"+ document.getElementById("interval").value;
 
                 document.getElementById('inter_minutes').innerHTML = document.getElementById("inter_min").value;
                 document.getElementById('inter_second').innerHTML = document.getElementById("inter_sec").value;
@@ -134,8 +182,8 @@ window.onload = function ()
                 document.getElementById("inter_second").textContent = parseInt(restAllTime % 60);
                 document.getElementById("inter_minutes").textContent = parseInt(restAllTime / 60);
 
-                angle = 0;
-                restAngle = 0;
+                pomodoroAngle.initialize();
+                restAngle.initialize();
             }
         }
     }
@@ -144,12 +192,12 @@ window.onload = function ()
     function drawCircle() 
     {
         const shape = document.querySelector(".shape");
-        shape.style.backgroundImage = `conic-gradient(black ${angle}deg, white ${angle}deg)`;
+        shape.style.backgroundImage = `conic-gradient(black ${pomodoroAngle.get()}deg, white ${pomodoroAngle.get()}deg)`;
     }
 
     function restDrawCircle() 
     {
         const restShape = document.querySelector(".restShape");
-        restShape.style.backgroundImage = `conic-gradient(red ${restAngle}deg, white ${restAngle}deg)`;
+        restShape.style.backgroundImage = `conic-gradient(red ${restAngle.get()}deg, white ${restAngle.get()}deg)`;
     }
 }
