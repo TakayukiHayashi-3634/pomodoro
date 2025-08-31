@@ -1,3 +1,5 @@
+import Animation from "./Animation.js";
+
 ///ポモドーロタイマーを制作するプログラム
 window.onload = function () 
 {
@@ -31,33 +33,9 @@ window.onload = function ()
 
     const pomodoroCount = new pomodoroCnt();
 
-    function circleAngle ()
-    {
-        var angle = 0;
+    const pomodoroCircle = Animation();
+    const restCircle = Animation();
 
-        return {
-            initialize: function(){
-                angle = 0;
-            },
-            set: function(value){
-                angle = value;
-            },
-            get: function(){
-                return angle;
-            },
-            add: function(value) {
-                angle+=value;
-            },
-            show: function() {
-                console.log(angle);
-            }
-        }; 
-    };
-
-    const circle = 360;
-    const pomodoroAngle = new circleAngle();
-    const restAngle = new circleAngle();
-    
     document.getElementById("start").onclick = function()
     {
         const min = document.getElementById("min");
@@ -80,6 +58,9 @@ window.onload = function ()
             allTime = parseInt(min.value) * 60 + parseInt(sec.value);
             restAllTime = parseInt(intervalMin.value) * 60 + parseInt(intervalSec.value);
             
+            console.log(`${allTime}`);
+            console.log(`${restAllTime}`);
+
             document.getElementById('minutes').innerHTML = min.value;
             document.getElementById('second').innerHTML = sec.value;
         }
@@ -106,25 +87,18 @@ window.onload = function ()
         location.reload();
     }
 
-
     setInterval(function()
     {
         if(timeFlag)
         {
-            if( pomodoroAngle.get() < circle ) 
-            {
-                //1/10秒間隔でアニメーションを進めているため、*10している
-                pomodoroAngle.add(circle/(allTime * 10));
-            }
-            drawCircle();
+            pomodoroCircle.circleAnimation(allTime);
+            pomodoroCircle.drawCircle(".shape","black");
         }
         else if(coursFlag)
         {
-            if(restAngle.get() < circle)
-            {
-                restAngle.add(circle/(restAllTime * 10));
-            }
-            restDrawCircle();
+            restCircle.circleAnimation(restAllTime);
+            restCircle.drawCircle(".restShape","red");
+            restCircle.debug();
         }
     }
     ,100);
@@ -182,22 +156,10 @@ window.onload = function ()
                 document.getElementById("inter_second").textContent = parseInt(restAllTime % 60);
                 document.getElementById("inter_minutes").textContent = parseInt(restAllTime / 60);
 
-                pomodoroAngle.initialize();
-                restAngle.initialize();
+                pomodoroCircle.radReset();
+                restCircle.radReset();
             }
         }
     }
     ,1000);
-
-    function drawCircle() 
-    {
-        const shape = document.querySelector(".shape");
-        shape.style.backgroundImage = `conic-gradient(black ${pomodoroAngle.get()}deg, white ${pomodoroAngle.get()}deg)`;
-    }
-
-    function restDrawCircle() 
-    {
-        const restShape = document.querySelector(".restShape");
-        restShape.style.backgroundImage = `conic-gradient(red ${restAngle.get()}deg, white ${restAngle.get()}deg)`;
-    }
 }
